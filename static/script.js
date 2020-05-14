@@ -50,7 +50,9 @@ function render_game(game) {
 		$("#played > .cardrack").find(color).html(item[1]);
 	});
 	$("#hintplayer").empty();
-	$("#hintplayer").append("<option>—</option>")
+	if (game.players.length > 2) {
+		$("#hintplayer").append("<option>—</option>")
+	}
 	game.player_names.forEach(function(item, index) {
 		let name = $("#players").first().children().eq(index).find(".playername");
 		name.removeClass("activeplayer");
