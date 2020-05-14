@@ -1,0 +1,12 @@
+[package]
+name = "hanabi"
+version = "0.1.0"
+authors = ["Wesley Aptekar-Cassels <me@wesleyac.com>"]
+edition = "2018"
+
+[dependencies]
+uuid = { version = "0.8", features = ["v4", "serde"] }
+rand = "0.7"
+serde = { version = "1.0", features = ["derive"] }
+rocket = "0.4.4"
+rocket_contrib = "0.4.4"

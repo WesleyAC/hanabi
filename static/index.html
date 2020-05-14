@@ -1,0 +1,80 @@
+<!doctype html>
+
+<html>
+	<head>
+		<title>hanabi</title>
+		<script src="/jquery-3.5.1.js"></script>
+		<script src="/jquery-ui.js"></script>
+
+		<script src="/script.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="/normalize.css">
+		<link rel="stylesheet" type="text/css" href="/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" href="/style.css">
+	</head>
+	<body>
+		<div id="gridwrapper">
+			<div id="players">
+				<div class="player">
+					<h2 class="playername"></h2>
+					<div class="cardrack">
+					</div>
+				</div>
+				<div class="player">
+					<h2 class="playername"></h2>
+					<div class="cardrack">
+					</div>
+				</div>
+				<div class="player">
+					<h2 class="playername"></h2>
+					<div class="cardrack">
+					</div>
+				</div>
+				<div class="player">
+					<h2 class="playername"></h2>
+					<div class="cardrack">
+					</div>
+				</div>
+			</div>
+			<div id="middlecol">
+				<div id="played">
+					<div class="cardrack">
+						<div class="card color-red">0</div>
+						<div class="card color-green">0</div>
+						<div class="card color-blue">0</div>
+						<div class="card color-yellow">0</div>
+						<div class="card color-white">0</div>
+						<div id="deck" class="card color-unknown"></div>
+					</div>
+				</div>
+				<div id="discard"></div>
+			</div>
+			<div id="infobox">
+				<div id="hints"></div>
+				<br>
+				<br>
+				<div id="fuses"></div>
+				<br>
+				<br>
+				<br>
+				<h2>hint: </h2>
+				<select id="hintplayer"></select>
+				<br>
+				<button class="hintbutton" onclick="giveHint(1)">1</button>
+				<button class="hintbutton" onclick="giveHint(2)">2</button>
+				<button class="hintbutton" onclick="giveHint(3)">3</button>
+				<button class="hintbutton" onclick="giveHint(4)">4</button>
+				<button class="hintbutton" onclick="giveHint(5)">5</button>
+				<br>
+				<button class="hintbutton color-red" onclick="giveHint('Red')"></button>
+				<button class="hintbutton color-green" onclick="giveHint('Green')"></button>
+				<button class="hintbutton color-blue" onclick="giveHint('Blue')"></button>
+				<button class="hintbutton color-yellow" onclick="giveHint('Yellow')"></button>
+				<button class="hintbutton color-white" onclick="giveHint('White')"></button>
+				<br>
+				<br>
+				<ul id="gamelog"></ul>
+			</div>
+		</div>
+	</body>
+</html>
