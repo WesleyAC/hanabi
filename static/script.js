@@ -167,6 +167,7 @@ $(document).ready(function() {
 
 	$("#discard").droppable({
 		accept: isMyTurn,
+		tolerance: "fit",
 		drop: function(e, ui) {
 			discardCard(JSON.parse(ui.draggable.attr("data-card")));
 			ui.draggable.remove();
@@ -175,6 +176,7 @@ $(document).ready(function() {
 
 	$("#played").droppable({
 		accept: isMyTurn,
+		tolerance: "fit",
 		drop: function(e, ui) {
 			playCard(JSON.parse(ui.draggable.attr("data-card")));
 			ui.draggable.remove();
