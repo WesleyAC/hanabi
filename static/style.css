@@ -9,6 +9,7 @@
 }
 
 html {
+	background-color: #e9d3b2;
 	background-image: url(/bg.png);
 	background-repeat: repeat; 
 	font-family: merriweather;
