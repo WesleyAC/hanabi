@@ -139,6 +139,7 @@ impl Game {
 }
 
 fn play_turn(game: &Game, turn: &PlayerTurn) -> Option<Game> {
+    if game.turn != turn.player { return None; }
     if game.fuses == 0 { return None; }
     if turn.player >= game.players.len() ||
         (game.deck.len() == 0 && game.endgame_turns == 0) {
