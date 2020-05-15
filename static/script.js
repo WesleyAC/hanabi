@@ -130,6 +130,7 @@ function refreshGame() {
 		if (JSON.stringify(game) != JSON.stringify(data)) {
 			game = data;
 			render_game(data);
+			$("#gridwrapper").show();
 		}
 	});
 }
