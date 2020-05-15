@@ -262,11 +262,8 @@ struct ServerState {
 }
 
 fn main() {
-    let mut games = HashMap::new();
-    games.insert("test".to_string(), Arc::new(Mutex::new(Game::new(2))));
-    games.insert("test2".to_string(), Arc::new(Mutex::new(Game::new(4))));
     let state = ServerState {
-        games: Arc::new(Mutex::new(games))
+        games: Arc::new(Mutex::new(HashMap::new())),
     };
     rocket::ignite()
         .mount("/", StaticFiles::from("./static"))
