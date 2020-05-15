@@ -159,6 +159,7 @@ body {
 	color: white;
 	-webkit-text-stroke: 1px black;
 	user-select: none;
+	pointer-events: none;
 }
 
 .activeplayer {

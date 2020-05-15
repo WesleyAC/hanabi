@@ -20,7 +20,7 @@ function render_card(card) {
 function render_game(game) {
 	$("#hints").empty();
 	for (i=0; i<game.hints; i++) {
-		$("#hints").append("<img class='token' src='/time_token.png'/>");
+		$("#hints").append("<img class='token' draggable='false' src='/time_token.png'/>");
 	}
 	$("#fuses").css("background-image", "url('/fuse" + game.fuses + ".png')").css("background-size", "80px 80px").html((game.fuses > 0) ? game.fuses : "");
 	$("#discard").empty();
