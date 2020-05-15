@@ -124,6 +124,10 @@ body {
 	background-size: 56.57px 56.57px;
 }
 
+.number-unknown {
+	font-size: 0px;
+}
+
 .token {
 	width: 80px;
 	height: 80px;

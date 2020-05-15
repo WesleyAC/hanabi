@@ -27,10 +27,11 @@ function render_game(game) {
 			cards.forEach(function(card) {
 				$(card).draggable({
 					"revert": "invalid",
+					"zIndex": 100,
 					//"connectToSortable": tray,
 				});
-				card.innerHTML = "?";
 				card.classList.add("color-unknown");
+				card.classList.add("number-unknown");
 				let carddata = JSON.parse(card.getAttribute("data-card"));
 				if (Object.keys(game.given_hints).includes(carddata.uuid)) {
 					game.given_hints[carddata.uuid].forEach(hint => {
@@ -38,7 +39,7 @@ function render_game(game) {
 							card.classList.remove("color-unknown");
 						}
 						if (hint.hasOwnProperty("Number")) {
-							card.innerHTML = carddata.number;
+							card.classList.remove("number-unknown");
 						}
 					});
 				}
