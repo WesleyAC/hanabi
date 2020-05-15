@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 
 use rocket::State;
 use rocket::http::RawStr;
+use rocket::response::content::Html;
 
 use rocket_contrib::json::Json;
 use rocket_contrib::serve::StaticFiles;
@@ -208,43 +209,69 @@ fn play_turn(game: &Game, turn: &PlayerTurn) -> Option<Game> {
     Some(game)
 }
 
-#[get("/gamedata")]
-fn gamedata(game: State<Arc<Mutex<Game>>>) -> Json<Game> {
-    Json(game.lock().unwrap().clone())
+#[derive(Deserialize, Serialize)]
+struct GameSetup {
+    name: String,
+    players: usize,
 }
 
-#[post("/join/<name>")]
-fn join(game: State<Arc<Mutex<Game>>>, name: &RawStr) {
-    let mut game = game.lock().unwrap();
+#[post("/newgame", data = "<setup>")]
+fn newgame(state: State<ServerState>, setup: Json<GameSetup>) -> Option<()> {
+    let mut games = state.inner().games.lock().unwrap();
+    if games.get(&setup.name).is_none() {
+        games.insert(setup.name.clone(), Arc::new(Mutex::new(Game::new(setup.players))));
+        Some(())
+    } else {
+        None
+    }
+}
+
+#[get("/<game>/gamedata")]
+fn gamedata(game: &RawStr, state: State<ServerState>) -> Option<Json<Game>> {
+    Some(Json(state.inner().games.lock().unwrap().get(&game.to_string())?.lock().unwrap().clone()))
+}
+
+#[post("/<game>/join/<name>")]
+fn join(game: &RawStr, name: &RawStr, state: State<ServerState>) -> Option<()> {
+    let games = state.inner().games.lock().unwrap();
+    let mut game = games.get(&game.to_string())?.lock().unwrap();
     if !game.player_names.iter().any(|x| x == &name.to_string()) && game.player_names.len() < game.players.len() {
         game.player_names.push(name.to_string());
     }
+    Some(())
 }
 
-#[post("/play", data = "<turn>")]
-fn play(game: State<Arc<Mutex<Game>>>, turn: Json<PlayerTurn>) {
-    let mut game = game.lock().unwrap();
+#[post("/<game>/play", data = "<turn>")]
+fn play(game: &RawStr, state: State<ServerState>, turn: Json<PlayerTurn>) -> Option<()> {
+    let games = state.inner().games.lock().unwrap();
+    let mut game = games.get(&game.to_string())?.lock().unwrap();
     if let Some(new_game) = play_turn(&game, &turn.into_inner()) {
         *game = new_game
     }
+    Some(())
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
-struct ReorderEvent {
-    player: Player,
-    hand: Vec<Card>,
+#[get("/<_game>")]
+fn gameindex(_game: &RawStr) -> Html<&str> {
+    Html(include_str!("../static/game.html"))
 }
 
-#[post("/reordercards", data = "<event>")]
-fn reordercards(game: State<Arc<Mutex<Game>>>, event: Json<ReorderEvent>) {
-    unimplemented!()
+// TODO: figure out what is actually going on here and stop throwing mutexes at the problem
+struct ServerState {
+    games: Arc<Mutex<HashMap<String, Arc<Mutex<Game>>>>>,
 }
 
 fn main() {
-    let game = Game::new(2);
+    let mut games = HashMap::new();
+    games.insert("test".to_string(), Arc::new(Mutex::new(Game::new(2))));
+    games.insert("test2".to_string(), Arc::new(Mutex::new(Game::new(4))));
+    let state = ServerState {
+        games: Arc::new(Mutex::new(games))
+    };
     rocket::ignite()
         .mount("/", StaticFiles::from("./static"))
-        .mount("/api/", routes![gamedata, join, play, reordercards])
-        .manage(Arc::new(Mutex::new(game)))
+        .mount("/api/", routes![newgame, gamedata, join, play])
+        .mount("/game/", routes![gameindex])
+        .manage(state)
         .launch();
 }

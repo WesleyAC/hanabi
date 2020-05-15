@@ -117,11 +117,12 @@ function isMyTurn() {
 	return playerNumber() == game.turn;
 }
 
+let gameid = undefined;
 let name = undefined;
 let game = undefined;
 
 function refreshGame() {
-	$.get("/api/gamedata", function(data) {
+	$.get("/api/" + gameid + "/gamedata", function(data) {
 		if (JSON.stringify(game) != JSON.stringify(data)) {
 			game = data;
 			render_game(data);
@@ -134,7 +135,7 @@ function discardCard(card) {
 		"player": playerNumber(),
 		"turn": {"Discard": card},
 	};
-	$.post("/api/play", data = JSON.stringify(play), refreshGame);
+	$.post("/api/" + gameid + "/play", data = JSON.stringify(play), refreshGame);
 }
 
 function playCard(card) {
@@ -142,7 +143,7 @@ function playCard(card) {
 		"player": playerNumber(),
 		"turn": {"Play": card},
 	};
-	$.post("/api/play", data = JSON.stringify(play), refreshGame);
+	$.post("/api/" + gameid + "/play", data = JSON.stringify(play), refreshGame);
 }
 
 function giveHint(hint) {
@@ -162,14 +163,16 @@ function giveHint(hint) {
 			},
 		},
 	};
-	$.post("/api/play", data = JSON.stringify(play), refreshGame);
+	$.post("/api/" + gameid + "/play", data = JSON.stringify(play), refreshGame);
 }
 
 $(document).ready(function() {
 	name = window.prompt("what's your name?");
 
+	gameid = window.location.pathname.split("/").slice(-1)[0];
+
 	if (name != null) {
-		$.post("/api/join/"+name);
+		$.post("/api/" + gameid + "/join/"+name);
 	}
 
 	$("#discard").droppable({
