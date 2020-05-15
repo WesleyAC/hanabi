@@ -164,8 +164,7 @@ fn play_turn(game: &Game, turn: &PlayerTurn) -> Option<Game> {
         Turn::Hint(hint) => {
             if game.hints == 0 { return None; }
             if hint.player == turn.player { return None; }
-            // TODO: check that hint applies to at least one card
-            for (card, hintdata) in game.players[hint.player].cards.iter().filter_map(|card| {
+            let mut cardhints = game.players[hint.player].cards.iter().filter_map(|card| {
                 match &hint.data {
                     HintData::Color(color) => {
                         if color == &card.color {
@@ -182,7 +181,9 @@ fn play_turn(game: &Game, turn: &PlayerTurn) -> Option<Game> {
                         }
                     },
                 }
-            }) {
+            }).peekable();
+            if cardhints.peek().is_none() { return None; }
+            for (card, hintdata) in cardhints {
                 if game.given_hints.get(&card).is_none() {
                     game.given_hints.insert(card.clone(), vec![]);
                 }
