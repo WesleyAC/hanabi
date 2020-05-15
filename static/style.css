@@ -92,6 +92,7 @@ body {
 
 .hintbutton {
 	border: 3px solid black;
+	border-radius: 10px;
 	background-color: white;
 	width: 50px;
 	height: 50px;
@@ -144,4 +145,15 @@ body {
 
 #deck {
 	margin-left: auto;
+}
+
+#hintplayer {
+	font-family: merriweather;
+	border: 3px solid black;
+	border-radius: 10px;
+	padding: 5px;
+	font-size: 140%;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
 }
