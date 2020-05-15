@@ -128,6 +128,14 @@ body {
 	font-size: 0px;
 }
 
+.hinted-color {
+	 background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=); 
+}
+
+.hinted-number {
+	font-size: 55px;
+}
+
 .token {
 	width: 80px;
 	height: 80px;

@@ -36,10 +36,10 @@ function render_game(game) {
 				if (Object.keys(game.given_hints).includes(carddata.uuid)) {
 					game.given_hints[carddata.uuid].forEach(hint => {
 						if (hint.hasOwnProperty("Color")) {
-							card.classList.remove("color-unknown");
+							card.classList.add("hinted-color");
 						}
 						if (hint.hasOwnProperty("Number")) {
-							card.classList.remove("number-unknown");
+							card.classList.add("hinted-number");
 						}
 					});
 				}
