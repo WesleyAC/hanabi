@@ -128,6 +128,8 @@ body {
 	width: 80px;
 	height: 80px;
 	margin: 5px;
+	border: 3px solid black;
+	border-radius: 50%;
 }
 
 .activeplayer {
