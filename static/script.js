@@ -49,7 +49,7 @@ function render_game(game) {
 	});
 	Object.entries(game.played).forEach(function(item, index) {
 		let color = ".color-" + item[0].toLowerCase();
-		$("#played > .cardrack").find(color).html(item[1]);
+		$("#played > .cardrack").find(color).html(item[1]).show();
 	});
 	$("#hintplayer").empty();
 	if (game.players.length > 2) {
