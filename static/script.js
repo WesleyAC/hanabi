@@ -5,6 +5,16 @@ function render_card(card) {
 	let player_card = game.players[playerNumber()].cards.map(hand_card => hand_card.uuid == card.uuid).some(x => x);
 	c.classList.add("color-"+card.color.toLowerCase());
 	c.innerHTML = card.number;
+	if (Object.keys(game.given_hints).includes(card.uuid)) {
+		game.given_hints[card.uuid].forEach(hint => {
+			if (hint.hasOwnProperty("Color")) {
+				c.classList.add("hinted-color");
+			}
+			if (hint.hasOwnProperty("Number")) {
+				c.classList.add("hinted-number");
+			}
+		});
+	}
 	return c;
 }
 
@@ -30,20 +40,9 @@ function render_game(game) {
 					"zIndex": 100,
 					//"connectToSortable": tray,
 				});
-				card.classList.add("color-unknown");
-				card.classList.add("number-unknown");
-				let carddata = JSON.parse(card.getAttribute("data-card"));
-				if (Object.keys(game.given_hints).includes(carddata.uuid)) {
-					game.given_hints[carddata.uuid].forEach(hint => {
-						if (hint.hasOwnProperty("Color")) {
-							card.classList.add("hinted-color");
-						}
-						if (hint.hasOwnProperty("Number")) {
-							card.classList.add("hinted-number");
-						}
-					});
-				}
 			});
+		} else {
+			tray.addClass("player-other");
 		}
 		tray.empty();
 		cards.forEach((card) => (tray.prepend(card)));
