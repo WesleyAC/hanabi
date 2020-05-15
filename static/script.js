@@ -121,8 +121,10 @@ let game = undefined;
 
 function refreshGame() {
 	$.get("/api/gamedata", function(data) {
-		game = data;
-		render_game(data);
+		if (JSON.stringify(game) != JSON.stringify(data)) {
+			game = data;
+			render_game(data);
+		}
 	});
 }
 
@@ -188,7 +190,7 @@ $(document).ready(function() {
 	});
 
 	window.setInterval(function(){
-		if ($(".ui-draggable-dragging").length == 0 && (typeof game == "undefined" || !isMyTurn())) {
+		if ($(".ui-draggable-dragging").length == 0 || typeof game == "undefined") {
 			refreshGame();
 		}
 	}, 1000);
