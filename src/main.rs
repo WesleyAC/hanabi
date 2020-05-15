@@ -228,11 +228,22 @@ fn play(game: State<Arc<Mutex<Game>>>, turn: Json<PlayerTurn>) {
     }
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+struct ReorderEvent {
+    player: Player,
+    hand: Vec<Card>,
+}
+
+#[post("/reordercards", data = "<event>")]
+fn reordercards(game: State<Arc<Mutex<Game>>>, event: Json<ReorderEvent>) {
+    unimplemented!()
+}
+
 fn main() {
-    let game = Game::new(4);
+    let game = Game::new(2);
     rocket::ignite()
         .mount("/", StaticFiles::from("./static"))
-        .mount("/api/", routes![gamedata, join, play])
+        .mount("/api/", routes![gamedata, join, play, reordercards])
         .manage(Arc::new(Mutex::new(game)))
         .launch();
 }

@@ -3,26 +3,8 @@ function render_card(card) {
 	c.classList.add("card");
 	c.setAttribute("data-card", JSON.stringify(card));
 	let player_card = game.players[playerNumber()].cards.map(hand_card => hand_card.uuid == card.uuid).some(x => x);
-	c.classList.add("color-unknown");
-	c.innerHTML = "?";
-	if (player_card && game.fuses > 0 && game.endgame_turns > 0) {
-		$(c).draggable({"revert": "invalid"});
-		if (Object.keys(game.given_hints).includes(card.uuid)) {
-			game.given_hints[card.uuid].forEach(hint => {
-				if (hint.hasOwnProperty("Color")) {
-					c.classList.remove("color-unknown");
-					c.classList.add("color-"+card.color.toLowerCase());
-				}
-				if (hint.hasOwnProperty("Number")) {
-					c.innerHTML = card.number;
-				}
-			});
-		}
-	} else {
-		c.classList.remove("color-unknown");
-		c.classList.add("color-"+card.color.toLowerCase());
-		c.innerHTML = card.number;
-	}
+	c.classList.add("color-"+card.color.toLowerCase());
+	c.innerHTML = card.number;
 	return c;
 }
 
@@ -39,11 +21,31 @@ function render_game(game) {
 	$("#deck").html(game.deck.length);
 	game.players.forEach(function(item, player) {
 		let tray = $("#players").first().children().eq(player).find(".cardrack");
+		let cards = item.cards.map((x) => (render_card(x)));
+		if (player == playerNumber() && game.fuses > 0 && game.endgame_turns > 0) {
+			//tray.sortable()
+			cards.forEach(function(card) {
+				$(card).draggable({
+					"revert": "invalid",
+					//"connectToSortable": tray,
+				});
+				card.innerHTML = "?";
+				card.classList.add("color-unknown");
+				let carddata = JSON.parse(card.getAttribute("data-card"));
+				if (Object.keys(game.given_hints).includes(carddata.uuid)) {
+					game.given_hints[carddata.uuid].forEach(hint => {
+						if (hint.hasOwnProperty("Color")) {
+							card.classList.remove("color-unknown");
+						}
+						if (hint.hasOwnProperty("Number")) {
+							card.innerHTML = carddata.number;
+						}
+					});
+				}
+			});
+		}
 		tray.empty();
-		item.cards.forEach(function(item, index) {
-			let card = render_card(item);
-			tray.prepend(card);
-		});
+		cards.forEach((card) => (tray.prepend(card)));
 	});
 	Object.entries(game.played).forEach(function(item, index) {
 		let color = ".color-" + item[0].toLowerCase();
