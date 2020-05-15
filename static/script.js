@@ -23,7 +23,7 @@ function render_game(game) {
 	for (i=0; i<game.hints; i++) {
 		$("#hints").append("<img class='token' src='/time_token.png'/>");
 	}
-	$("#fuses").html("<img class='token' src='/fuse" + game.fuses + ".png'/>");
+	$("#fuses").css("background-image", "url('/fuse" + game.fuses + ".png')").css("background-size", "80px 80px").html((game.fuses > 0) ? game.fuses : "");
 	$("#discard").empty();
 	game.discard.forEach(function(item, index) {
 		$("#discard").append(render_card(item));
@@ -102,6 +102,7 @@ function render_game(game) {
 		msg += " (" + getScore() + ")</li>";
 		$("#gamelog").append(msg);
 	}
+	$("#gamelog").scrollTop($("#gamelog")[0].scrollHeight);
 }
 
 function getScore() {

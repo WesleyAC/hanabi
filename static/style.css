@@ -63,9 +63,16 @@ body {
 
 #infobox {
 	grid-column: 3;
+	display: flex;
+	flex-direction: column;
+	height: calc(100vh - 30px);
 }
 
 #infobox > * {
+	margin-bottom: 20px;
+}
+
+#infobox > div > h2 {
 	display: inline;
 }
 
@@ -100,6 +107,8 @@ body {
 	margin: 5px;
 	text-align: center;
 	line-height: 0px;
+	font-family: quicksand;
+	font-size: 25px;
 }
 
 .color-blue {
@@ -122,20 +131,33 @@ body {
 	background-color: yellowgreen;
 }
 
-.hinted-color, .player-other:not(:hover) > div {
+.hinted-color,
+.player-other:not(:hover) > div,
+#discard > div {
 	 background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=); 
 }
 
-.hinted-number, .player-other:not(:hover) > div {
+.hinted-number,
+.player-other:not(:hover) > div,
+#discard > div {
 	font-size: 55px;
 }
 
 .token {
+	display: inline-block;
 	width: 80px;
 	height: 80px;
 	margin: 5px;
 	border: 3px solid black;
 	border-radius: 50%;
+	background-color: black;
+	line-height: 80px;
+	text-align: center;
+	font-size: 55px;
+	font-family: quicksand;
+	color: white;
+	-webkit-text-stroke: 1px black;
+	user-select: none;
 }
 
 .activeplayer {
@@ -156,4 +178,9 @@ body {
 	-moz-appearance: none;
 	-webkit-appearance: none;
 	appearance: none;
+}
+
+#gamelog {
+	flex: 1;
+	overflow-y: scroll;
 }
