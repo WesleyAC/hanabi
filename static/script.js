@@ -2,7 +2,6 @@ function render_card(card) {
 	let c = document.createElement("div");
 	c.classList.add("card");
 	c.setAttribute("data-card", JSON.stringify(card));
-	let player_card = game.players[playerNumber()].cards.map(hand_card => hand_card.uuid == card.uuid).some(x => x);
 	c.classList.add("color-"+card.color.toLowerCase());
 	c.innerHTML = card.number;
 	if (Object.keys(game.given_hints).includes(card.uuid)) {
@@ -110,7 +109,12 @@ function getScore() {
 }
 
 function playerNumber() {
-	return game.player_names.indexOf(name);
+	let num = game.player_names.indexOf(name);
+	if (typeof num == "undefined") {
+		return -1;
+	} else {
+		return num;
+	}
 }
 
 function isMyTurn() {
