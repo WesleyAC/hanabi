@@ -12,24 +12,20 @@
 
 <script>
 function startGame() {
-	let name = $("#gamename").val();
-	if (name != "") {
-		let game = {
-			"name": name,
-			"players": parseInt($("#players").val()),
-		};
-		$.ajax({
-			url: "/api/newgame",
-			type: "post",
-			data: JSON.stringify(game),
-			success: function() {
-				window.location = "/game/" + name;
-			},
-			error: function() {
-				alert("game name already in use, or other error");
-			},
-		});
-	}
+	let game = {
+		"players": parseInt($("#players").val()),
+	};
+	$.ajax({
+		url: "/api/newgame",
+		type: "post",
+		data: JSON.stringify(game),
+		success: function(data) {
+			window.location = "/game/" + data;
+		},
+		error: function() {
+			alert("error :(");
+		},
+	});
 	return false;
 }
 </script>
@@ -46,7 +42,6 @@ function startGame() {
 						<option value="4">4 players</option>
 						<option value="5">5 players</option>
 					</select>
-					<input id="gamename" placeholder="game name"></input>
 					<br>
 					<br>
 					<input type="submit" value="start game"></input>

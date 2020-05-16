@@ -87,7 +87,7 @@ struct PlayerTurn {
 }
 
 impl Game {
-    fn new(num_players: usize) -> Self {
+    fn new(num_players: usize) -> Option<Self> {
         let mut deck = vec![];
         for color in [Color::Red, Color::Green, Color::Blue, Color::White, Color::Yellow].iter() {
             for number in 1..=5 {
@@ -95,7 +95,7 @@ impl Game {
                     1 => 3,
                     2..=4 => 2,
                     5 => 1,
-                    _ => unreachable!(),
+                    _ => { return None; },
                 };
                 for _ in 0..n {
                     deck.push(Card {
@@ -122,7 +122,7 @@ impl Game {
             players.push(Hand { cards });
         }
 
-        Game {
+        Some(Game {
             player_names: vec![],
             players,
             deck,
@@ -134,7 +134,7 @@ impl Game {
             turn: 0,
             endgame_turns: num_players + 1, // do i need +1? or +2?
             moves: vec![],
-        }
+        })
     }
 }
 
@@ -212,19 +212,15 @@ fn play_turn(game: &Game, turn: &PlayerTurn) -> Option<Game> {
 
 #[derive(Deserialize, Serialize)]
 struct GameSetup {
-    name: String,
     players: usize,
 }
 
 #[post("/newgame", data = "<setup>")]
-fn newgame(state: State<ServerState>, setup: Json<GameSetup>) -> Option<()> {
+fn newgame(state: State<ServerState>, setup: Json<GameSetup>) -> Option<String> {
     let mut games = state.inner().games.lock().unwrap();
-    if games.get(&setup.name).is_none() {
-        games.insert(setup.name.clone(), Arc::new(Mutex::new(Game::new(setup.players))));
-        Some(())
-    } else {
-        None
-    }
+    let uuid = Uuid::new_v4();
+    games.insert(uuid.to_string(), Arc::new(Mutex::new(Game::new(setup.players)?)));
+    Some(uuid.to_string())
 }
 
 #[get("/<game>/gamedata")]

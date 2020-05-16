@@ -17,7 +17,6 @@ this implementation is currently pretty rough around the edges, but i think it's
 - [ ] add audible cues when people play
 - [ ] clean up UX around playing/discarding cards on a slow internet connection
 - [ ] add rainbow variant
-- [ ] make game names random
 - [ ] make the name input modal nicer
 - [ ] fix bug with spaces in names
 - [ ] make play drop target nicer
