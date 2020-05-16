@@ -18,7 +18,5 @@ this implementation is currently pretty rough around the edges, but i think it's
 - [ ] add rainbow variant
 - [ ] make the name input modal nicer
 - [ ] fix bug with spaces in names
-- [ ] make play drop target nicer
-- [ ] make it clearer which drop target is play and which is discard
 - [ ] persist game data
 - [ ] add ability to view play-by-plays

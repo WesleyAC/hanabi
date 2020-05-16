@@ -195,7 +195,7 @@ $(document).ready(function() {
 
 	$("#played").droppable({
 		accept: isMyTurn,
-		tolerance: "fit",
+		tolerance: "intersect",
 		drop: function(e, ui) {
 			playCard(JSON.parse(ui.draggable.attr("data-card")));
 			ui.draggable.remove();
