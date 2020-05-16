@@ -196,3 +196,8 @@ select, button, input {
 #content > h1 {
 	text-align: center;
 }
+
+.playername {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
