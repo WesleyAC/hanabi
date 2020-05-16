@@ -14,7 +14,6 @@ this implementation is currently pretty rough around the edges, but i think it's
 ## TODO
 
 - [ ] allow reordering cards in hand
-- [ ] add audible cues when people play
 - [ ] clean up UX around playing/discarding cards on a slow internet connection
 - [ ] add rainbow variant
 - [ ] make the name input modal nicer

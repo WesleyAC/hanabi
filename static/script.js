@@ -128,6 +128,10 @@ let game = undefined;
 function refreshGame() {
 	$.get("/api/" + gameid + "/gamedata", function(data) {
 		if (JSON.stringify(game) != JSON.stringify(data)) {
+			if (typeof game != "undefined" && game.turn != data.turn && data.turn == playerNumber()) {
+				let ding = new Audio("/ding.mp3");
+				ding.play();
+			}
 			game = data;
 			render_game(data);
 			$("#gridwrapper").show();
