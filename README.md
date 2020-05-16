@@ -7,7 +7,7 @@ why another implementation of hanabi? there's a bunch of things i don't like abo
 * they require creating accounts.
 * they are difficult to figure out how to use (i failed to even start a game on [boardgamearena](https://boardgamearena.com/)).
 * they're often very slow ([hanabi.live](https://hanabi.live/) managed to render my friends computer almost unusable).
-* they calculate and track too much information for you, pusing you to play hanabi as a very explicitly convention based game, which is not how i like to play.
+* they calculate and track too much information for you, pushing you to play hanabi as a very explicitly convention based game, which is not how i like to play.
 
 this implementation is currently pretty rough around the edges, but i think it's currently better than existing sites on the axes that i care about, so maybe you'll enjoy it as well <3
 
