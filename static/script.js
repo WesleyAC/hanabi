@@ -22,7 +22,7 @@ function render_game(game) {
 	for (i=0; i<game.hints; i++) {
 		$("#hints").append("<img class='token' draggable='false' src='/time_token.png'/>");
 	}
-	$("#fuses").css("background-image", "url('/fuse" + game.fuses + ".png')").css("background-size", "80px 80px").html((game.fuses > 0) ? game.fuses : "");
+	$("#fuses").css("background-image", "url('/fuse" + game.fuses + ".png')").css("background-size", "80px 80px").css("flex-shrink", "0").html((game.fuses > 0) ? game.fuses : "");
 	$("#discard").empty();
 	game.discard.forEach(function(item, index) {
 		$("#discard").append(render_card(item));
