@@ -11,6 +11,8 @@ why another implementation of hanabi? there's a bunch of things i don't like abo
 
 this implementation is currently pretty rough around the edges, but i think it's currently better than existing sites on the axes that i care about, so maybe you'll enjoy it as well <3
 
+![](/screenshot.png)
+
 ## TODO
 
 - [ ] allow reordering cards in hand
