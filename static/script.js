@@ -92,6 +92,8 @@ function render_game(game) {
 		$("#gamelog").append(msg);
 	});
 	if (game.fuses == 0 || game.endgame_turns == 0) {
+		let ding3 = new Audio("/3ding.mp3");
+		ding3.play();
 		let msg = "<li>game over: "
 		if (getScore() <= 5) {
 			msg += "horrible, booed by the crowd...";
@@ -136,7 +138,12 @@ let game = undefined;
 function refreshGame() {
 	$.get("/api/" + gameid + "/gamedata", function(data) {
 		if (JSON.stringify(game) != JSON.stringify(data)) {
-			if (typeof game != "undefined" && game.turn != data.turn && data.turn == playerNumber()) {
+			if (
+				typeof game != "undefined" &&
+				game.turn != data.turn &&
+				data.turn == playerNumber() &&
+				!(game.fuses == 0 || game.endgame_turns == 0)
+			) {
 				let ding = new Audio("/ding.mp3");
 				ding.play();
 			}
