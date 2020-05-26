@@ -69,19 +69,24 @@ function render_game(game) {
 	game.moves.forEach(function(item, index) {
 		let msg = "<li>" + game.player_names[item.player] + " ";
 		if (item.turn.hasOwnProperty("Hint")) {
-			msg += "hinted " + game.player_names[item.turn.Hint.player] + " ";
-			if (item.turn.Hint.data.hasOwnProperty("Number")) {
-				msg += item.turn.Hint.data.Number;
-			} else if (item.turn.Hint.data.hasOwnProperty("Color")) {
-				msg += item.turn.Hint.data.Color;
+			const number_to_word = { 1: "one", 2: "two", 3: "three", 4: "four", 5: "five" };
+			msg += "hinted " + game.player_names[item.turn.Hint[0].player] + " " + number_to_word[item.turn.Hint[1]] + " <b>";
+			if (item.turn.Hint[0].data.hasOwnProperty("Number")) {
+				msg += item.turn.Hint[0].data.Number;
+			} else if (item.turn.Hint[0].data.hasOwnProperty("Color")) {
+				msg += item.turn.Hint[0].data.Color;
 			}
+			if (item.turn.Hint[1] > 1) {
+				msg += "s";
+			}
+			msg += "</b>";
 		} else if (item.turn.hasOwnProperty("Play")) {
-			msg += "played " + item.turn.Play[0].color + " " + item.turn.Play[0].number;
+			msg += "played <b>" + item.turn.Play[0].color + " " + item.turn.Play[0].number + "</b>";
 			if (!item.turn.Play[1]) {
 				msg += ", and set off a fuse :(";
 			}
 		} else if (item.turn.hasOwnProperty("Discard")) {
-			msg += "discarded " + item.turn.Discard.color + " " + item.turn.Discard.number;
+			msg += "discarded <b>" + item.turn.Discard.color + " " + item.turn.Discard.number + "</b>";
 		}
 		msg += "</li>";
 		$("#gamelog").append(msg);

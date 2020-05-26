@@ -89,7 +89,7 @@ struct PlayerTurn {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 enum TurnRecord {
     Play((Card, bool)), // true == successful, false == failed
-    Hint(Hint),
+    Hint((Hint, usize)),
     Discard(Card),
 }
 
@@ -184,7 +184,7 @@ fn play_turn(game: &Game, turn: &PlayerTurn) -> Option<Game> {
         Turn::Hint(hint) => {
             if game.hints == 0 { return None; }
             if hint.player == turn.player { return None; }
-            let mut cardhints = game.players[hint.player].cards.iter().filter_map(|card| {
+            let cardhints: Vec<(Uuid, HintData)> = game.players[hint.player].cards.iter().filter_map(|card| {
                 match &hint.data {
                     HintData::Color(color) => {
                         if color == &card.color {
@@ -201,18 +201,18 @@ fn play_turn(game: &Game, turn: &PlayerTurn) -> Option<Game> {
                         }
                     },
                 }
-            }).peekable();
-            if cardhints.peek().is_none() { return None; }
-            for (card, hintdata) in cardhints {
+            }).collect();
+            if cardhints.len() == 0 { return None; }
+            for (card, hintdata) in &cardhints {
                 if game.given_hints.get(&card).is_none() {
                     game.given_hints.insert(card.clone(), vec![]);
                 }
-                game.given_hints.get_mut(&card).unwrap().push(hintdata);
+                game.given_hints.get_mut(&card).unwrap().push(hintdata.clone());
             }
             game.hints = std::cmp::max(game.hints - 1, 0);
             game.moves.push(PlayerTurnRecord {
                 player: turn.player,
-                turn: TurnRecord::Hint(hint.clone()),
+                turn: TurnRecord::Hint((hint.clone(), cardhints.len())),
             });
         },
         Turn::Discard(card) => {
