@@ -70,7 +70,7 @@ struct Game {
     fuses: u8,
     turn: Player,
     endgame_turns: usize,
-    moves: Vec<PlayerTurn>,
+    moves: Vec<PlayerTurnRecord>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -84,6 +84,19 @@ enum Turn {
 struct PlayerTurn {
     player: Player,
     turn: Turn,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+enum TurnRecord {
+    Play((Card, bool)), // true == successful, false == failed
+    Hint(Hint),
+    Discard(Card),
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+struct PlayerTurnRecord {
+    player: Player,
+    turn: TurnRecord,
 }
 
 impl Game {
@@ -150,18 +163,23 @@ fn play_turn(game: &Game, turn: &PlayerTurn) -> Option<Game> {
         Turn::Play(card) => {
             let card = game.players[turn.player].cards.remove_item(&card)?;
             let current = game.played.get(&card.color).unwrap_or(&None).unwrap_or(0);
-            if card.number == current + 1 {
+            let correct = current + 1 == card.number;
+            if correct {
                 if card.number == 5 {
                     game.hints = std::cmp::min(game.hints + 1, 8);
                 }
-                game.played.insert(card.color, Some(card.number));
+                game.played.insert(card.color.clone(), Some(card.number.clone()));
             } else {
-                game.discard.push(card);
+                game.discard.push(card.clone());
                 game.fuses -= 1;
             }
             if let Some(new_card) = game.deck.pop() {
                 game.players[turn.player].cards.push(new_card);
             }
+            game.moves.push(PlayerTurnRecord {
+                player: turn.player,
+                turn: TurnRecord::Play((card, correct)),
+            });
         },
         Turn::Hint(hint) => {
             if game.hints == 0 { return None; }
@@ -192,21 +210,28 @@ fn play_turn(game: &Game, turn: &PlayerTurn) -> Option<Game> {
                 game.given_hints.get_mut(&card).unwrap().push(hintdata);
             }
             game.hints = std::cmp::max(game.hints - 1, 0);
+            game.moves.push(PlayerTurnRecord {
+                player: turn.player,
+                turn: TurnRecord::Hint(hint.clone()),
+            });
         },
         Turn::Discard(card) => {
             let card = game.players[turn.player].cards.remove_item(&card)?;
-            game.discard.push(card);
+            game.discard.push(card.clone());
             if let Some(new_card) = game.deck.pop() {
                 game.players[turn.player].cards.push(new_card);
             }
             game.hints = std::cmp::min(game.hints + 1, 8);
+            game.moves.push(PlayerTurnRecord {
+                player: turn.player,
+                turn: TurnRecord::Discard(card),
+            });
         },
     }
     game.turn = (game.turn + 1) % game.players.len();
     if game.deck.len() == 0 {
         game.endgame_turns -= 1;
     }
-    game.moves.push(turn.clone());
     Some(game)
 }
 

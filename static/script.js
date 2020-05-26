@@ -76,7 +76,10 @@ function render_game(game) {
 				msg += item.turn.Hint.data.Color;
 			}
 		} else if (item.turn.hasOwnProperty("Play")) {
-			msg += "played " + item.turn.Play.color + " " + item.turn.Play.number;
+			msg += "played " + item.turn.Play[0].color + " " + item.turn.Play[0].number;
+			if (!item.turn.Play[1]) {
+				msg += ", and set off a fuse :(";
+			}
 		} else if (item.turn.hasOwnProperty("Discard")) {
 			msg += "discarded " + item.turn.Discard.color + " " + item.turn.Discard.number;
 		}
