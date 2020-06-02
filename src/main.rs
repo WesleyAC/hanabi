@@ -100,17 +100,11 @@ struct PlayerTurnRecord {
 }
 
 impl Game {
-    fn new(num_players: usize) -> Option<Self> {
+    fn new(num_players: usize) -> Self {
         let mut deck = vec![];
         for color in [Color::Red, Color::Green, Color::Blue, Color::White, Color::Yellow].iter() {
-            for number in 1..=5 {
-                let n = match number {
-                    1 => 3,
-                    2..=4 => 2,
-                    5 => 1,
-                    _ => { return None; },
-                };
-                for _ in 0..n {
+            for (number, occurences) in [(1, 3), (2, 2), (3, 2), (4, 2), (5, 1)].iter() {
+                for _ in 0..*occurences {
                     deck.push(Card {
                         uuid: Uuid::new_v4(),
                         color: color.clone(),
@@ -135,7 +129,7 @@ impl Game {
             players.push(Hand { cards });
         }
 
-        Some(Game {
+        Game {
             player_names: vec![],
             players,
             deck,
@@ -147,7 +141,7 @@ impl Game {
             turn: 0,
             endgame_turns: num_players + 1, // do i need +1? or +2?
             moves: vec![],
-        })
+        }
     }
 }
 
@@ -244,7 +238,7 @@ struct GameSetup {
 fn newgame(state: State<ServerState>, setup: Json<GameSetup>) -> Option<String> {
     let mut games = state.inner().games.lock().unwrap();
     let uuid = Uuid::new_v4();
-    games.insert(uuid.to_string(), Arc::new(Mutex::new(Game::new(setup.players)?)));
+    games.insert(uuid.to_string(), Arc::new(Mutex::new(Game::new(setup.players))));
     Some(uuid.to_string())
 }
 
