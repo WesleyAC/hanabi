@@ -64,7 +64,7 @@ struct Game {
     players: Vec<Hand>,
     deck: Vec<Card>,
     discard: Vec<Card>,
-    played: HashMap<Color, Option<u8>>,
+    played: HashMap<Color, u8>,
     given_hints: HashMap<Uuid, Vec<HintData>>,
     hints: u8,
     fuses: u8,
@@ -156,13 +156,13 @@ fn play_turn(game: &Game, turn: &PlayerTurn) -> Option<Game> {
     match &turn.turn {
         Turn::Play(card) => {
             let card = game.players[turn.player].cards.remove_item(&card)?;
-            let current = game.played.get(&card.color).unwrap_or(&None).unwrap_or(0);
+            let current = game.played.get(&card.color).unwrap_or(&0);
             let correct = current + 1 == card.number;
             if correct {
                 if card.number == 5 {
                     game.hints = std::cmp::min(game.hints + 1, 8);
                 }
-                game.played.insert(card.color.clone(), Some(card.number.clone()));
+                game.played.insert(card.color.clone(), card.number.clone());
             } else {
                 game.discard.push(card.clone());
                 game.fuses -= 1;
