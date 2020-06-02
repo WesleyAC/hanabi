@@ -238,19 +238,19 @@ struct GameSetup {
 fn newgame(state: State<ServerState>, setup: Json<GameSetup>) -> Option<String> {
     let mut games = state.inner().games.lock().unwrap();
     let uuid = Uuid::new_v4();
-    games.insert(uuid.to_string(), Arc::new(Mutex::new(Game::new(setup.players))));
+    games.insert(uuid.to_string(), Game::new(setup.players));
     Some(uuid.to_string())
 }
 
 #[get("/<game>/gamedata")]
 fn gamedata(game: &RawStr, state: State<ServerState>) -> Option<Json<Game>> {
-    Some(Json(state.inner().games.lock().unwrap().get(&game.to_string())?.lock().unwrap().clone()))
+    Some(Json(state.inner().games.lock().unwrap().get(&game.to_string())?.clone()))
 }
 
 #[post("/<game>/join/<name>")]
 fn join(game: &RawStr, name: &RawStr, state: State<ServerState>) -> Option<()> {
-    let games = state.inner().games.lock().unwrap();
-    let mut game = games.get(&game.to_string())?.lock().unwrap();
+    let mut games = state.inner().games.lock().unwrap();
+    let game = games.get_mut(&game.to_string())?;
     if !game.player_names.iter().any(|x| x == &name.to_string()) && game.player_names.len() < game.players.len() {
         game.player_names.push(name.to_string());
     }
@@ -259,8 +259,8 @@ fn join(game: &RawStr, name: &RawStr, state: State<ServerState>) -> Option<()> {
 
 #[post("/<game>/play", data = "<turn>")]
 fn play(game: &RawStr, state: State<ServerState>, turn: Json<PlayerTurn>) -> Option<()> {
-    let games = state.inner().games.lock().unwrap();
-    let mut game = games.get(&game.to_string())?.lock().unwrap();
+    let mut games = state.inner().games.lock().unwrap();
+    let game = games.get_mut(&game.to_string())?;
     if let Some(new_game) = play_turn(&game, &turn.into_inner()) {
         *game = new_game
     }
@@ -274,7 +274,7 @@ fn gameindex(_game: &RawStr) -> Html<&str> {
 
 // TODO: figure out what is actually going on here and stop throwing mutexes at the problem
 struct ServerState {
-    games: Arc<Mutex<HashMap<String, Arc<Mutex<Game>>>>>,
+    games: Arc<Mutex<HashMap<String, Game>>>,
 }
 
 fn main() {
