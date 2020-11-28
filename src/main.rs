@@ -13,13 +13,20 @@ use serde::{Deserialize, Serialize};
 
 use rocket::State;
 use rocket::http::RawStr;
+use rocket::http::ContentType;
+use rocket::response::Response;
 use rocket::response::content::Html;
 
 use rocket_contrib::json::Json;
-use rocket_contrib::serve::StaticFiles;
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
+use std::ffi::OsStr;
+use std::io::Cursor;
+
+#[derive(rust_embed::RustEmbed)]
+#[folder = "static/"]
+struct StaticAssets;
 
 #[derive(Clone, Debug, Hash, PartialEq, Eq, Serialize, Deserialize)]
 enum Color {
@@ -267,9 +274,27 @@ fn play(game: &RawStr, state: State<ServerState>, turn: Json<PlayerTurn>) -> Opt
     Some(())
 }
 
-#[get("/<_game>")]
+#[get("/game/<_game>")]
 fn gameindex(_game: &RawStr) -> Html<&str> {
     Html(include_str!("../static/game.html"))
+}
+
+#[get("/")]
+fn index() -> Html<Vec<u8>> {
+    Html(StaticAssets::get("index.html").unwrap().to_vec())
+}
+
+#[get("/<path..>", rank=1)]
+fn static_page(path: std::path::PathBuf) -> Option<Response<'static>> {
+    if let Some(contents) = StaticAssets::get(&path.as_path().to_str().unwrap()) {
+        let response = Response::build()
+            .header(ContentType::from_extension(path.extension().unwrap_or(OsStr::new("txt")).to_str()?)?)
+            .sized_body(Cursor::new(contents.into_owned()))
+            .finalize();
+        Some(response)
+    } else {
+        None
+    }
 }
 
 // TODO: figure out what is actually going on here and stop throwing mutexes at the problem
@@ -282,9 +307,8 @@ fn main() {
         games: Arc::new(Mutex::new(HashMap::new())),
     };
     rocket::ignite()
-        .mount("/", StaticFiles::from("./static"))
+        .mount("/", routes![index, gameindex, static_page])
         .mount("/api/", routes![newgame, gamedata, join, play])
-        .mount("/game/", routes![gameindex])
         .manage(state)
         .launch();
 }
