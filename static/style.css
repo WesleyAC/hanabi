@@ -97,6 +97,22 @@ body {
 	font-size: 0px;
 }
 
+select, button, input {
+	font-family: merriweather;
+	border: 3px solid black;
+	border-radius: 10px;
+	padding: 5px;
+	font-size: 140%;
+	background-color: #eee;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+select:hover, button:hover, input:hover {
+	background-color: #d8d8d8;
+}
+
 .hintbutton {
 	border: 3px solid black;
 	border-radius: 10px;
@@ -112,23 +128,23 @@ body {
 }
 
 .color-blue {
-	background-color: deepskyblue;
+	background-color: deepskyblue !important;
 }
 
 .color-white {
-	background-color: mintcream;
+	background-color: mintcream !important;
 }
 
 .color-red {
-	background-color: tomato;
+	background-color: tomato !important;
 }
 
 .color-yellow {
-	background-color: gold;
+	background-color: gold !important;
 }
 
 .color-green {
-	background-color: yellowgreen;
+	background-color: yellowgreen !important;
 }
 
 .hinted-color,
@@ -168,17 +184,6 @@ body {
 
 #deck {
 	margin-left: auto;
-}
-
-select, button, input {
-	font-family: merriweather;
-	border: 3px solid black;
-	border-radius: 10px;
-	padding: 5px;
-	font-size: 140%;
-	-moz-appearance: none;
-	-webkit-appearance: none;
-	appearance: none;
 }
 
 #gamelog {
